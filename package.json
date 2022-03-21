@@ -1,0 +1,53 @@
+{
+  "name": "electron_test",
+  "version": "1.0.0",
+  "description": "electron test",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env NODE_ENV=\"develop\" electron . ",
+    "build:win": "cross-env NODE_ENV=\"production\" electron-builder --win --x64",
+    "build:mac": "echo 未対応"
+  },
+  "build": {
+    "appId": "com.example.electrontest",
+    "directories": {
+      "output": "dist"
+    },
+    "productName": "animate_image_converter",
+    "files": [
+      "assets",
+      "src",
+      "package.json",
+      "package-lock.json"
+    ],
+    "extraResources": [
+      "src/bin/"
+    ],
+    "mac": {
+      "icon": "assets/app.ico",
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "icon": "assets/app.ico",
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "author": "f-take",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^17.1.2",
+    "electron-builder": "^22.14.13"
+  },
+  "volta": {
+    "node": "16.13.0",
+    "npm": "8.1.4"
+  }
+}
