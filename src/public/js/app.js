@@ -8,6 +8,9 @@
 
     btn.addEventListener( 'click', async () => {
         const dirList = await window.myApi.selectDirectory();
+        if( dirList.length === 0 ) return;
+
+        btn.setAttribute( 'disabled', 'true' );
         progressText.innerHTML = dirList.join( '<br>' );
 
         const result = await window.myApi.convertAnimateImage( dirList );
@@ -16,5 +19,7 @@
         errorText.innerHTML = result.error.map( err => {
             return `${err.path}<br><pre>${err.message}</pre>`
         } ).join( '<br>' );
+
+        btn.removeAttribute( 'disabled' );
     });
 })();
