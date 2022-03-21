@@ -28,7 +28,7 @@ const createWindow = () => {
                 if( result.canceled ) return [];
                 return result.filePaths;
             } );
-    })
+    });
 
     mainWindow.loadFile( path.join( __dirname, 'public', 'index.html' ) );
 }
