@@ -32,36 +32,50 @@ const convertList = async ( dirList, options = {} ) => {
                 errorList.push( result );
             }
         });
-
     });
     return { success: successList, error: errorList };
-}
+};
 
 const convert = async ( sourceDir, options ) => {
     const files     = await readdir( sourceDir );
-    const pngFiles  = files.filter( name => /.png$/.test( name ) );
+    const targetFiles  = files.filter( name => /.png$/.test( name ) );
     const result = {
         path    : sourceDir,
         success : false,
         message : ''
     };
 
-    if( pngFiles.length === 0 ){
+    if( targetFiles.length === 0 ){
         result.message = 'cannot find valid format image in this directory.';
         return result;
     }
+    
+    const promiseList = [];
+    promiseList.push( createWebp( sourceDir, targetFiles, options ) );
+    promiseList.push( createApng( sourceDir, targetFiles, options ) );
+    await Promise.all( promiseList )
+        .then(( values ) => {
+            result.success = true;
+        })
+        .catch(( e ) => {
+            result.message = e.message;
+        });
+    return result;
+};
 
+const createWebp = async ( sourceDir, targetFiles, options ) => {
     const binPath   = path.join( BIN_DIR , 'img2webp.exe' );
     const dirName   = path.basename( sourceDir );
-    const command = `cd ${sourceDir} && ${binPath} -o ${path.join( options.outputDir, `${dirName}.webp` )} -loop 1 -q 85 -d 83.3 -m 6 -lossy ${pngFiles.join( ' ' )}`;
-    
-    try{
-        const res = await exec(command);
-    }catch( e ){
-        result.message = e.message;
-        return result;
-    }
-    result.success = true;
+    const command = `cd ${sourceDir} && ${binPath} -o ${path.join( options.outputDir, `${dirName}.webp` )} -loop 1 -q 85 -d 83.3 -m 6 -lossy ${targetFiles.join( ' ' )}`;
+    const result = await exec(command);
+    return result;
+};
+
+const createApng = async( sourceDir, targetFiles, options ) => {
+    const binPath   = path.join( BIN_DIR , 'apngasm64.exe' );
+    const dirName   = path.basename( sourceDir );
+    const command = `cd ${sourceDir} && ${binPath} ${path.join( options.outputDir, `${dirName}.png` )} ${targetFiles.join( ' ' ) } 1 12 -l1 -z2`;
+    const result = await exec(command);
     return result;
 }
 
