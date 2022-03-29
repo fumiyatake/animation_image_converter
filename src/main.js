@@ -2,6 +2,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require( 'electron' );
 const path = require( 'path' );
 const { IS_DEV } = require( './config.js' );
+const { convertList } = require('./animate_image_convert.js');
 
 const createWindow = () => {
     const mainWindow = new BrowserWindow({
@@ -28,6 +29,10 @@ const createWindow = () => {
                 if( result.canceled ) return [];
                 return result.filePaths;
             } );
+    });
+
+    ipcMain.handle('convert-animate-image', async ( _e, _arg ) => {
+        return convertList( ..._arg );
     });
 
     mainWindow.loadFile( path.join( __dirname, 'public', 'index.html' ) );
