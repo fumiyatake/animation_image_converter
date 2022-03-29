@@ -49,5 +49,9 @@
   "volta": {
     "node": "16.13.0",
     "npm": "8.1.4"
+  },
+  "dependencies": {
+    "imagemin": "^8.0.1",
+    "imagemin-pngquant": "^9.0.2"
   }
 }

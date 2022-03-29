@@ -5,7 +5,7 @@ const util = require( 'util' );
 const childProcess = require('child_process');
 const exec = util.promisify(childProcess.exec);
 
-const { readdir, mkdir, stat } = require('fs').promises;
+const { readdir, mkdir, rm ,stat } = require('fs').promises;
 const { BIN_DIR } = require( './config.js' );
 
 const convertList = async ( dirList, options = {} ) => {
@@ -49,19 +49,49 @@ const convert = async ( sourceDir, options ) => {
         result.message = 'cannot find valid format image in this directory.';
         return result;
     }
-    
+
+    const compressedDir = path.join( sourceDir, 'compress' );
+    await compress( sourceDir, compressedDir, targetFiles );
+
     const promiseList = [];
     promiseList.push( createWebp( sourceDir, targetFiles, options ) );
-    promiseList.push( createApng( sourceDir, targetFiles, options ) );
+    promiseList.push( createApng( compressedDir, targetFiles, options ) );
     await Promise.all( promiseList )
         .then(( values ) => {
             result.success = true;
         })
         .catch(( e ) => {
             result.message = e.message;
+        })
+        .finally( async() =>{
+            // 圧縮した画像を削除
+            // TODO: オプションで一応残せるようにしたい
+            await rm( compressedDir, { recursive: true, force: true } );
         });
     return result;
 };
+
+const compress = async( sourceDir, compressedDir, targetFiles ) => {
+    // imageminはPure ESModule形式で他がCommonJS形式なのでDynamic importによる読み込みを使用
+    const { default: imagemin }         = await import( 'imagemin' );
+    const { default: imageminPngquant } = await import( 'imagemin-pngquant' );
+    
+    try{
+        await stat( compressedDir );
+    }catch( e ){
+        await mkdir( compressedDir );
+    }
+    
+    await imagemin( targetFiles.map( file => path.join( sourceDir, file ) ), {
+        destination: compressedDir,
+        plugins:[
+            imageminPngquant({
+                speed: 1,
+                quality: [0.7, 0.7],
+            })
+        ]
+    });
+}
 
 const createWebp = async ( sourceDir, targetFiles, options ) => {
     const binPath   = path.join( BIN_DIR , 'img2webp.exe' );
