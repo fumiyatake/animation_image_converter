@@ -33,7 +33,8 @@ const convertList = async ( dirList, options = {} ) => {
             }
         });
     });
-    return { success: successList, error: errorList };
+    
+    return { success: successList, error: errorList, output: options.outputDir };
 };
 
 const convert = async ( sourceDir, options ) => {
