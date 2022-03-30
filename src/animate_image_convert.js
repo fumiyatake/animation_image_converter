@@ -95,14 +95,16 @@ const compress = async( sourceDir, compressedDir, targetFiles ) => {
 
 const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => {
     const binPath   = path.join( BIN_DIR , 'img2webp.exe' );
-    const command = `cd ${sourceDir} && ${binPath} -o ${path.join( options.outputDir, `${outputFileName}.webp` )} -loop 1 -q 85 -d 83.3 -m 6 -lossy ${targetFiles.join( ' ' )}`;
+    const command = `cd ${sourceDir} && ${binPath} -o ${path.join( options.outputDir, `${outputFileName}.webp` )} -loop ${options.loop} -q 85 -d 83.3 -m 6 -lossy ${targetFiles.join( ' ' )}`;
+    console.log(command);
     const result = await exec(command);
     return result;
 };
 
 const createApng = async( sourceDir, targetFiles, outputFileName, options ) => {
     const binPath   = path.join( BIN_DIR , 'apngasm64.exe' );
-    const command = `cd ${sourceDir} && ${binPath} ${path.join( options.outputDir, `${outputFileName}.png` )} ${targetFiles.join( ' ' ) } 1 12 -l1 -z2`;
+    const command = `cd ${sourceDir} && ${binPath} ${path.join( options.outputDir, `${outputFileName}.png` )} ${targetFiles.join( ' ' ) } 1 12 -l${options.loop} -z2`;
+    console.log(command);
     const result = await exec(command);
     return result;
 }
