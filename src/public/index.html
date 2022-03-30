@@ -9,13 +9,17 @@
     </head>
     <body>
         <h1>Animation Image Converter</h1>
-        <button id="button">select</button>
+        <button id="buttonSelectFolder">変換対象のフォルダを選択</button><br>
+        <br>
+        <button id="buttonExecute" disabled="true">変換実行</button><br>
+        <h3>▼selected</h3>
+        <pre id="selectedText"></pre>
         <h3>▼progress</h3>
-        <p id="progressText"></p>
+        <pre id="progressText"></pre>
         <h3>▼success</h3>
-        <p id="successText"></p>
+        <pre id="successText"></pre>
         <h3>▼error</h3>
-        <p id="errorText"></p>
+        <pre id="errorText"></pre>
         <script src="./js/app.js" defer></script>
     </body>
 </html>

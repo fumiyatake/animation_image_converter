@@ -1,16 +1,30 @@
 (function(){
     'use strict';
 
-    const btn           = document.getElementById( 'button' );
-    const progressText  = document.getElementById( 'progressText' );
-    const successText   = document.getElementById( 'successText' );
-    const errorText     = document.getElementById( 'errorText' );
+    const buttonSelectFolder    = document.getElementById( 'buttonSelectFolder' );
+    const buttonExecute         = document.getElementById( 'buttonExecute' );
+    const selectedText          = document.getElementById( 'selectedText' );
+    const progressText          = document.getElementById( 'progressText' );
+    const successText           = document.getElementById( 'successText' );
+    const errorText             = document.getElementById( 'errorText' );
 
-    btn.addEventListener( 'click', async () => {
-        const dirList = await window.myApi.selectDirectory();
+    let dirList = [];
+
+    buttonSelectFolder.addEventListener( 'click', async () => {
+        dirList = await window.myApi.selectDirectory();
+        selectedText.innerHTML = dirList.join( '<br>' );
+
+        if( dirList.length === 0 ){
+            buttonExecute.setAttribute( 'disabled', 'true' );
+        }else{
+            buttonExecute.removeAttribute( 'disabled' );
+        }
+    });
+    buttonExecute.addEventListener( 'click', async () => {
         if( dirList.length === 0 ) return;
 
-        btn.setAttribute( 'disabled', 'true' );
+        buttonExecute.setAttribute( 'disabled', 'true' );
+        selectedText.innerHTML = '';
         progressText.innerHTML = dirList.join( '<br>' );
 
         const result = await window.myApi.convertAnimateImage( dirList );
@@ -20,6 +34,5 @@
             return `${err.path}<br><pre>${err.message}</pre>`
         } ).join( '<br>' );
 
-        btn.removeAttribute( 'disabled' );
     });
 })();
