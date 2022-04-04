@@ -45,18 +45,30 @@ const convert = async ( sourceDir, options ) => {
         success : false,
         message : ''
     };
+    let isCompressed = false;
+    let compressedDir;
 
     if( targetFiles.length === 0 ){
         result.message = 'cannot find valid format image in this directory.';
         return result;
     }
 
-    const compressedDir = path.join( sourceDir, 'compress' );
-    await compress( sourceDir, compressedDir, targetFiles );
-
     const promiseList = [];
-    promiseList.push( createWebp( sourceDir, targetFiles, path.basename( sourceDir ), options ) );
-    promiseList.push( createApng( compressedDir, targetFiles, path.basename( sourceDir ), options ) );
+    if( 'webp' in options ){
+        promiseList.push( createWebp( sourceDir, targetFiles, path.basename( sourceDir ), options ) );
+    }
+
+    if( 'apng' in options ){
+        if( options.apng.compress ){
+            isCompressed = true;
+            compressedDir= path.join( sourceDir, 'compress' );
+            await compress( sourceDir, compressedDir, targetFiles, options );
+        }else{
+            compressedDir = sourceDir;
+        }
+        promiseList.push( createApng( compressedDir, targetFiles, path.basename( sourceDir ), options ) );
+    }
+
     await Promise.all( promiseList )
         .then(( values ) => {
             result.success = true;
@@ -67,12 +79,12 @@ const convert = async ( sourceDir, options ) => {
         .finally( async() =>{
             // 圧縮した画像を削除
             // TODO: オプションで一応残せるようにしたい
-            await rm( compressedDir, { recursive: true, force: true } );
+            if( isCompressed ) await rm( compressedDir, { recursive: true, force: true } );
         });
     return result;
 };
 
-const compress = async( sourceDir, compressedDir, targetFiles ) => {
+const compress = async( sourceDir, compressedDir, targetFiles, options ) => {
     // imageminはPure ESModule形式で他がCommonJS形式なのでDynamic importによる読み込みを使用
     const { default: imagemin }         = await import( 'imagemin' );
     const { default: imageminPngquant } = await import( 'imagemin-pngquant' );
@@ -88,7 +100,10 @@ const compress = async( sourceDir, compressedDir, targetFiles ) => {
         plugins:[
             imageminPngquant({
                 speed: 1,
-                quality: [0.7, 0.7],
+                quality: [
+                    options.apng.quality_min / 100, 
+                    options.apng.quality_max / 100
+                ],
             })
         ]
     });
@@ -96,7 +111,7 @@ const compress = async( sourceDir, compressedDir, targetFiles ) => {
 
 const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => {
     const binPath   = path.join( BIN_DIR , 'img2webp.exe' );
-    const command = `cd ${sourceDir} && ${binPath} -o ${path.join( options.outputDir, `${outputFileName}.webp` )} -loop ${options.loop} -q 85 -d 83.3 -m 6 -lossy ${targetFiles.join( ' ' )}`;
+    const command = `cd ${sourceDir} && ${binPath} -o ${path.join( options.outputDir, `${outputFileName}.webp` )} -loop ${options.loop} -q ${options.webp.quality} -d ${ 1000 / options.framerate} -m 6 -lossy ${targetFiles.join( ' ' )}`;
     console.log(command);
     const result = await exec(command);
     return result;
@@ -104,7 +119,7 @@ const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => 
 
 const createApng = async( sourceDir, targetFiles, outputFileName, options ) => {
     const binPath   = path.join( BIN_DIR , 'apngasm64.exe' );
-    const command = `cd ${sourceDir} && ${binPath} ${path.join( options.outputDir, `${outputFileName}.png` )} ${targetFiles.join( ' ' ) } 1 12 -l${options.loop} -z2`;
+    const command = `cd ${sourceDir} && ${binPath} ${path.join( options.outputDir, `${outputFileName}.png` )} ${targetFiles.join( ' ' ) } 1 ${options.framerate} -l${options.loop} -z2`;
     console.log(command);
     const result = await exec(command);
     return result;
