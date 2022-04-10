@@ -26,10 +26,12 @@
     const selectApngCompressType    = document.getElementById( 'selectApngCompressType' );
 
     // log
-    const selectedText          = document.getElementById( 'selectedText' );
-    const progressText          = document.getElementById( 'progressText' );
-    const successText           = document.getElementById( 'successText' );
-    const errorText             = document.getElementById( 'errorText' );
+    const convertProgressWrapper    = document.getElementById( 'convertProgressWrapper' );
+    const convertProgressText       = document.getElementById( 'convertProgressText' );
+    const selectedText              = document.getElementById( 'selectedText' );
+    const progressText              = document.getElementById( 'progressText' );
+    const successText               = document.getElementById( 'successText' );
+    const errorText                 = document.getElementById( 'errorText' );
 
     let dirList = [];
 
@@ -47,35 +49,51 @@
     buttonExecute.addEventListener( 'click', async () => {
         if( dirList.length === 0 ) return;
 
+        const progressDirList = dirList.concat();
+
         buttonExecute.setAttribute( 'disabled', 'true' );
         buttonSelectFolder.setAttribute( 'disabled', 'true' );
-        selectedText.innerHTML = '';
-        progressText.innerHTML = dirList.join( '<br>' );
+        selectedText.innerHTML  = '';
+        successText.innerHTML   = '';
+        errorText.innerHTML     = '';
+        progressText.innerHTML  = progressDirList.join( '<br>' );
+        
+        convertProgressWrapper.style.display = 'block';
+        convertProgressText.innerText = `0 / ${dirList.length}`;
+        convertProgressWrapper.querySelector( '.progressGauge > p' ).style.width = '0';
 
-        const promiseList = [];
+        const promiseList = [], successList = [], errorList = [];;
+        let finishCount = 0;
+
         const options = getOptions( dirList );
-
         dirList.forEach( async ( sourceDir ) => {
-            promiseList.push( window.myApi.convertAnimateImage( sourceDir, options ) );
+            promiseList.push(
+                window.myApi.convertAnimateImage( sourceDir, options ).then( ( result ) => {
+                    if( result.success ){
+                        successList.push( result.path );
+                        successText.innerHTML = successList.join( '<br>' );
+                    }else{
+                        errorList.push( result );
+                        errorText.innerHTML = errorList.map( err => {
+                            return `${err.path}<br><pre>${err.message}</pre>`
+                        } ).join( '<br>' );
+                    }
+
+                    if( progressDirList.indexOf( result.path ) !== -1 ){
+                        progressDirList.splice( progressDirList.indexOf( result.path ), 1 );
+                        progressText.innerHTML = progressDirList.join( '<br>' );
+                    }
+                    
+                    finishCount++;
+                    convertProgressText.innerText = `${finishCount} / ${dirList.length}`;
+                    convertProgressWrapper.querySelector( '.progressGauge > p' ).style.width = `${finishCount / dirList.length * 100}%`;
+                    return result;
+                } )
+            );
         });
     
-        const successList = [], errorList = [];
-        await Promise.all( promiseList ).then( values => { 
-            values.forEach( result => {
-                if( result.success ){
-                    successList.push( result.path );
-                }else{
-                    errorList.push( result );
-                }
-            });
-        });
+        await Promise.all( promiseList );
 
-        progressText.innerHTML = '';
-        successText.innerHTML = successList.join( '<br>' );
-        errorText.innerHTML = errorList.map( err => {
-            return `${err.path}<br><pre>${err.message}</pre>`
-        } ).join( '<br>' );
-        
         buttonSelectFolder.removeAttribute( 'disabled' );
         window.myApi.showResult( options.outputDir, successList.length, errorList.length );
     });

@@ -9,8 +9,9 @@
     </head>
     <body>
         <h1>Animation Image Converter</h1>
-        <button id="buttonSelectFolder">変換対象のフォルダを選択</button><br>
         <br>
+        <button id="buttonSelectFolder">変換対象のフォルダを選択</button><br>
+        
         target : <input type="checkbox"  id="checkboxTargetWebp" name="target" value="webp" checked/> webp 
         <input type="checkbox" id="checkboxTargetApng" name="target" value="apng" checked/> apng
         <br>
@@ -48,17 +49,23 @@
                 <option value="3">Zopfli</option>
             </select>
         </div>
-        <br>
-        
+
         <button id="buttonExecute" disabled="true">変換実行</button><br>
+
+        <div id="convertProgressWrapper">
+            <h3>Progress</h3>
+            <span id="convertProgressText">0 / 0</span>
+            <div class="progressGauge"><p></p></div>
+        </div>
+
         <h3>▼selected</h3>
-        <pre id="selectedText"></pre>
+        <pre id="selectedText" class="log"></pre>
         <h3>▼progress</h3>
-        <pre id="progressText"></pre>
+        <pre id="progressText" class="log"></pre>
         <h3>▼success</h3>
-        <pre id="successText"></pre>
+        <pre id="successText" class="log"></pre>
         <h3>▼error</h3>
-        <pre id="errorText"></pre>
+        <pre id="errorText" class="log"></pre>
         <script src="./js/app.js" defer></script>
     </body>
 </html>
