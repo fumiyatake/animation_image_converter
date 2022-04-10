@@ -77,7 +77,7 @@
         } ).join( '<br>' );
         
         buttonSelectFolder.removeAttribute( 'disabled' );
-        window.myApi.showResult( options.outputDir );
+        window.myApi.showResult( options.outputDir, successList.length, errorList.length );
     });
 
     checkboxTargetWebp.addEventListener( 'change', function(){
