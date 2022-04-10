@@ -22,7 +22,8 @@
       "package-lock.json"
     ],
     "extraResources": [
-      "src/bin/"
+      "src/bin/",
+      "node_modules"
     ],
     "mac": {
       "icon": "assets/app.ico",
