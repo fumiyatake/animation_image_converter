@@ -1,7 +1,7 @@
 {
-  "name": "electron_test",
+  "name": "animate_image_converter",
   "version": "1.0.0",
-  "description": "electron test",
+  "description": "Animate Image Converter",
   "main": "src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
     "build:mac": "echo 未対応"
   },
   "build": {
-    "appId": "com.example.electrontest",
+    "appId": "com.example.animate_image_converter",
     "directories": {
       "output": "dist"
     },
