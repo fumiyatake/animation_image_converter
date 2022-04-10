@@ -4,20 +4,19 @@ const path = require( 'path' );
 const { IS_DEV } = require( './config.js' );
 const { convert } = require('./animate_image_convert.js');
 
-const createWindow = () => {
+const createWindow = async () => {
     const mainWindow = new BrowserWindow({
-        width: 600,
-        height: 400,
         title: 'Animation Image Converter',
         webPreferences: {
             nodeIntegration: false,
             preload: path.join( __dirname, 'preload.js' ),
         }
     });
+    mainWindow.maximize();
 
     // open devtool if env is develop
     if( IS_DEV ){
-        mainWindow.webContents.openDevTools( { mode: 'detach' } );
+        mainWindow.webContents.openDevTools( { mode: 'right' } );
     }
     
     ipcMain.handle('select-directory', async ( _e, _arg ) =>{
