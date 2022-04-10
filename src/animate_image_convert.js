@@ -5,17 +5,16 @@ const util = require( 'util' );
 const childProcess = require('child_process');
 const exec = util.promisify(childProcess.exec);
 
-const { readdir, mkdir, rm ,stat } = require('fs').promises;
+const { readdirSync, mkdirSync, rmSync ,existsSync } = require('fs');
 const { BIN_DIR } = require( './config.js' );
 
 const convertList = async ( dirList, options = {} ) => {
     if( dirList.length === 0 ) return;
 
     options.outputDir = 'outputDir' in options || path.join( dirList[0], '..', 'output' );
-    try{
-        await stat( options.outputDir );
-    }catch( e ){
-        await mkdir( options.outputDir );
+
+    if( !existsSync( options.outputDir ) ){
+        mkdirSync( options.outputDir, { recursive: true } );
     }
 
     const promiseList = [];
@@ -38,7 +37,7 @@ const convertList = async ( dirList, options = {} ) => {
 };
 
 const convert = async ( sourceDir, options ) => {
-    const files     = await readdir( sourceDir );
+    const files     = readdirSync( sourceDir );
     const targetFiles  = files.filter( name => /\.png$/.test( name ) );
     const result = {
         path    : sourceDir,
@@ -97,8 +96,8 @@ const convert = async ( sourceDir, options ) => {
         .finally( async() =>{
             // 圧縮した画像を削除
             if( !options.save_compressed ){
-                if( isCompressedWebp )  await rm( compressedDirWebp, { recursive: true, force: true } );
-                if( isCompressedPng )   await rm( compressedDirPng, { recursive: true, force: true } );
+                if( isCompressedWebp )  rmSync( compressedDirWebp, { recursive: true, force: true } );
+                if( isCompressedPng )   rmSync( compressedDirPng, { recursive: true, force: true } );
             }
         });
     return result;
@@ -109,10 +108,8 @@ const compressWebp = async( sourceDir, compressedDir, targetFiles, options ) => 
     const { default: imagemin }         = await import( 'imagemin' );
     const { default: imageminPngquant } = await import( 'imagemin-webp' );
     
-    try{
-        await stat( compressedDir );
-    }catch( e ){
-        await mkdir( compressedDir );
+    if( !existsSync( compressedDir ) ){
+        mkdirSync( compressedDir, { recursive: true } );
     }
     
     await imagemin( targetFiles.map( file => path.join( sourceDir, file ) ), {
@@ -131,10 +128,8 @@ const compressPng = async( sourceDir, compressedDir, targetFiles, options ) => {
     const { default: imagemin }         = await import( 'imagemin' );
     const { default: imageminPngquant } = await import( 'imagemin-pngquant' );
     
-    try{
-        await stat( compressedDir );
-    }catch( e ){
-        await mkdir( compressedDir );
+    if( !existsSync( compressedDir ) ){
+        mkdirSync( compressedDir, { recursive: true } );
     }
     
     await imagemin( targetFiles.map( file => path.join( sourceDir, file ) ), {
