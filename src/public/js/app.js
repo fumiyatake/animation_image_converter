@@ -16,7 +16,7 @@
     const webpSettingBlock          = document.getElementById( 'webpSettings' );
     const checkboxWebpCompress      = document.getElementById( 'checkboxWebpCompress' );
     const selectWebpCompressPreset  = document.getElementById( 'selectWebpCompressPreset' );
-    const checkboxWebpQualityAuto   = document.getElementById( 'checkboxWebpQualityAuto' );
+    const checkboxWebpQualityMinsize   = document.getElementById( 'checkboxWebpQualityMinsize' );
     const numberWebpQuality         = document.getElementById( 'numberWebpQuality' );
 
     // apng
@@ -106,7 +106,7 @@
         apngSettingBlock.style.display = this.checked ? 'block' : 'none';
     });
 
-    checkboxWebpQualityAuto.addEventListener( 'change', function(){
+    checkboxWebpQualityMinsize.addEventListener( 'change', function(){
         if( this.checked ){
             numberWebpQuality.setAttribute( 'disabled', 'true' );
         }else{
@@ -126,7 +126,7 @@
             options['webp'] = {
                 'compress'          : checkboxWebpCompress.checked,
                 'compress_preset'   : selectWebpCompressPreset.value,
-                'minsize'           : checkboxWebpQualityAuto.checked,
+                'minsize'           : checkboxWebpQualityMinsize.checked,
                 'quality'           : numberWebpQuality.value,
             };
         }
