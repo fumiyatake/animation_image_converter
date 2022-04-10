@@ -8,34 +8,6 @@ const exec = util.promisify(childProcess.exec);
 const { readdirSync, mkdirSync, rmSync ,existsSync } = require('fs');
 const { BIN_DIR } = require( './config.js' );
 
-const convertList = async ( dirList, options = {} ) => {
-    if( dirList.length === 0 ) return;
-
-    options.outputDir = 'outputDir' in options || path.join( dirList[0], '..', 'output' );
-
-    if( !existsSync( options.outputDir ) ){
-        mkdirSync( options.outputDir, { recursive: true } );
-    }
-
-    const promiseList = [];
-    dirList.forEach( async ( sourceDir ) => {
-        promiseList.push( convert( sourceDir, options ) );
-    });
-
-    const successList = [], errorList = [];
-    await Promise.all( promiseList ).then( values => { 
-        values.forEach( result => {
-            if( result.success ){
-                successList.push( result.path );
-            }else{
-                errorList.push( result );
-            }
-        });
-    });
-    
-    return { success: successList, error: errorList, output: options.outputDir };
-};
-
 const convert = async ( sourceDir, options ) => {
     const files     = readdirSync( sourceDir );
     const targetFiles  = files.filter( name => /\.png$/.test( name ) );
@@ -52,6 +24,10 @@ const convert = async ( sourceDir, options ) => {
     if( targetFiles.length === 0 ){
         result.message = 'cannot find valid format image in this directory.';
         return result;
+    }
+
+    if( !existsSync( options.outputDir ) ){
+        mkdirSync( options.outputDir, { recursive: true } );
     }
 
     const promiseList = [];
@@ -179,5 +155,5 @@ const createApng = async( sourceDir, targetFiles, outputFileName, options ) => {
 }
 
 module.exports = {
-    convertList: convertList
+    convert: convert
 }

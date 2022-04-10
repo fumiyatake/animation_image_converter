@@ -52,15 +52,32 @@
         selectedText.innerHTML = '';
         progressText.innerHTML = dirList.join( '<br>' );
 
-        const result = await window.myApi.convertAnimateImage( dirList, getOptions() );
+        const promiseList = [];
+        const options = getOptions( dirList );
+
+        dirList.forEach( async ( sourceDir ) => {
+            promiseList.push( window.myApi.convertAnimateImage( sourceDir, options ) );
+        });
+    
+        const successList = [], errorList = [];
+        await Promise.all( promiseList ).then( values => { 
+            values.forEach( result => {
+                if( result.success ){
+                    successList.push( result.path );
+                }else{
+                    errorList.push( result );
+                }
+            });
+        });
+
         progressText.innerHTML = '';
-        successText.innerHTML = result.success.join( '<br>' );
-        errorText.innerHTML = result.error.map( err => {
+        successText.innerHTML = successList.join( '<br>' );
+        errorText.innerHTML = errorList.map( err => {
             return `${err.path}<br><pre>${err.message}</pre>`
         } ).join( '<br>' );
         
         buttonSelectFolder.removeAttribute( 'disabled' );
-
+        window.myApi.showResult( options.outputDir );
     });
 
     checkboxTargetWebp.addEventListener( 'change', function(){
@@ -79,8 +96,9 @@
         }
     });
 
-    const getOptions = () => {
+    const getOptions = ( dirList ) => {
         const options = {
+            'outputDir'         : [ ...dirList[0].split( window.vars.ds ).slice( 0, -1 ), 'output' ].join( window.vars.ds ),
             'framerate'         : numberFramerate.value,
             'loop'              : checkboxLoop.checked ? '0' : '1', // ループ回数は0=無限
             'save_compressed'   : checkboxSaveCompress.checked
