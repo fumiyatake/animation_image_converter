@@ -16,9 +16,38 @@
         <br>
         loop : <input id="checkboxLoop" type="checkbox" name="loop" /><br>
         framerate : <input type="number" id="numberFramerate" min="0" value="12"> / sec<br>
-        webp-quality : <input type="number" id="numberWebpQuality" class="webpSetting" min="0" max="100" value="85"><br>
-        png-compress : <input type="checkbox" id="checkboxCompress" class="apngSetting" name="png-compress" checked/><br>
-        png-quality : <input type="number" id="numberPngQuality" class="apngSetting" min="0" max="100" value="70"><br>
+        save compress image : <input id="checkboxSaveCompress" type="checkbox" name="save-compress" /><br>
+        
+        <div id="webpSettings" class="settingBlock">
+            <h3>webp</h3>
+            <h4>pre compress setting ( cwebp )</h4>
+            enable compress : <input type="checkbox" id="checkboxWebpCompress" checked/><br>
+            compress preset :  <select id="selectWebpCompressPreset">
+                <option value="default">default</option>
+                <option value="picture">picture</option>
+                <option value="photo">photo</option>
+                <option value="drawing">drawing</option>
+                <option value="icon">icon</option>
+                <option value="text">text</option>
+            </select>
+
+            <h4>animation convert setting ( img2webp )</h4>
+            quality(auto) : <input type="checkbox" id="checkboxWebpQualityAuto" checked/><br>
+            quality(manual) : <input type="number" id="numberWebpQuality" min="0" max="100" value="85" disabled><br>
+        </div>
+
+        <div id="apngSettings" class="settingBlock">
+            <h3>apng</h3>
+            <h4>pre compress setting ( pngquant )</h4>
+            enable compress : <input type="checkbox" id="checkboxPngCompress" name="png-compress" checked/><br>
+            compress quality : <input type="number" id="numberPngQuality" min="0" max="100" value="70"><br>
+            <h4>animation convert setting ( apngasm )</h4>
+            compress type : <select id="selectApngCompressType">
+                <option value="1">zlib</option>
+                <option value="2" selected>7zip</option>
+                <option value="3">Zopfli</option>
+            </select>
+        </div>
         <br>
         
         <button id="buttonExecute" disabled="true">変換実行</button><br>
