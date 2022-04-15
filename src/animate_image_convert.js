@@ -90,6 +90,7 @@ const compressWebp = async( sourceDir, compressedDir, targetFiles, options ) => 
     
     await imagemin( targetFiles.map( file => path.join( sourceDir, file ) ), {
         destination: compressedDir,
+        glob: false,
         plugins:[
             imageminPngquant({
                 preset: options.webp.compress_preset,
@@ -110,6 +111,7 @@ const compressPng = async( sourceDir, compressedDir, targetFiles, options ) => {
     
     await imagemin( targetFiles.map( file => path.join( sourceDir, file ) ), {
         destination: compressedDir,
+        glob: false,
         plugins:[
             imageminPngquant({
                 speed: 1,
