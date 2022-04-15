@@ -125,15 +125,15 @@ const compressPng = async( sourceDir, compressedDir, targetFiles, options ) => {
 const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => {
     const binPath   = path.join( BIN_DIR , 'img2webp.exe' );
     const optionString = [
-        `-o ${path.join( options.outputDir, `${outputFileName}.webp` )}`,
+        `-o "${path.join( options.outputDir, `${outputFileName}.webp` )}"`,
         `-loop ${options.loop}`,
         `-d ${ 1000 / options.framerate}`,
         options.webp.minsize ?  `-min_size` : `-q ${options.webp.quality}`,
         `-m 6`,
         `-lossy`,
-        targetFiles.join( ' ' ),
+        targetFiles.map( file => `"${file}"` ).join( ' ' ),
     ].join( ' ' );
-    const command = `cd ${sourceDir} && ${binPath} ${optionString}`;
+    const command = `cd "${sourceDir}" && ${binPath} ${optionString}`;
     console.log(command);
     const result = await exec(command);
     return result;
@@ -142,13 +142,13 @@ const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => 
 const createApng = async( sourceDir, targetFiles, outputFileName, options ) => {
     const binPath   = path.join( BIN_DIR , 'apngasm64.exe' );
     const optionString = [
-        path.join( options.outputDir, `${outputFileName}.png` ),  // output
-        targetFiles.join( ' ' ), // source files
+        `"${path.join( options.outputDir, `${outputFileName}.png` )}"`,  // output
+        targetFiles.map( file => `"${file}"` ).join( ' ' ), // source files
         `1 ${options.framerate}`,
         `-l${options.loop}`,
         `-z${options.apng.apng_compress_type}`,
     ].join( ' ' );
-    const command = `cd ${sourceDir} && ${binPath} ${optionString}`;
+    const command = `cd "${sourceDir}" && ${binPath} ${optionString}`;
     console.log(command);
     const result = await exec(command);
     return result;
