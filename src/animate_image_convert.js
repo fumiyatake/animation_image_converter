@@ -124,6 +124,7 @@ const compressPng = async( sourceDir, compressedDir, targetFiles, options ) => {
 
 const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => {
     const binPath   = path.join( BIN_DIR , 'img2webp.exe' );
+    const drive = sourceDir.slice(0,2);
     const optionString = [
         `-o "${path.join( options.outputDir, `${outputFileName}.webp` )}"`,
         `-loop ${options.loop}`,
@@ -133,7 +134,9 @@ const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => 
         `-lossy`,
         targetFiles.map( file => `"${file}"` ).join( ' ' ),
     ].join( ' ' );
-    const command = `cd "${sourceDir}" && ${binPath} ${optionString}`;
+    // コマンドには文字数制限があるため、超えないようにcdで素材フォルダまで移動したうえで実行
+    // ※別ドライブに移動する場合、cdの前にドライブ自体の移動が必要
+    const command = `${drive} && cd "${sourceDir}" && ${binPath} ${optionString}`;
     console.log(command);
     const result = await exec(command);
     return result;
@@ -141,6 +144,7 @@ const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => 
 
 const createApng = async( sourceDir, targetFiles, outputFileName, options ) => {
     const binPath   = path.join( BIN_DIR , 'apngasm64.exe' );
+    const drive = sourceDir.slice(0,2);
     const optionString = [
         `"${path.join( options.outputDir, `${outputFileName}.png` )}"`,  // output
         targetFiles.map( file => `"${file}"` ).join( ' ' ), // source files
@@ -148,7 +152,9 @@ const createApng = async( sourceDir, targetFiles, outputFileName, options ) => {
         `-l${options.loop}`,
         `-z${options.apng.apng_compress_type}`,
     ].join( ' ' );
-    const command = `cd "${sourceDir}" && ${binPath} ${optionString}`;
+    // コマンドには文字数制限があるため、超えないようにcdで素材フォルダまで移動したうえで実行
+    // ※別ドライブに移動する場合、cdの前にドライブ自体の移動が必要
+    const command = `${drive} && cd "${sourceDir}" && ${binPath} ${optionString}`;
     console.log(command);
     const result = await exec(command);
     return result;
