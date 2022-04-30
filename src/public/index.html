@@ -12,18 +12,18 @@
         <br>
         <button id="buttonSelectFolder">変換対象のフォルダを選択</button><br>
         
-        target : <input type="checkbox"  id="checkboxTargetWebp" name="target" value="webp" checked/> webp 
+        対象 : <input type="checkbox"  id="checkboxTargetWebp" name="target" value="webp" checked/> webp 
         <input type="checkbox" id="checkboxTargetApng" name="target" value="apng" checked/> apng
         <br>
-        loop : <input id="checkboxLoop" type="checkbox" name="loop" /><br>
-        framerate : <input type="number" id="numberFramerate" min="0" value="12"> / sec<br>
-        save compress image : <input id="checkboxSaveCompress" type="checkbox" name="save-compress" /><br>
+        ループ : <input id="checkboxLoop" type="checkbox" name="loop" /><br>
+        フレームレート : <input type="number" id="numberFramerate" min="0" value="12"> / sec<br>
+        圧縮画像を保存 : <input id="checkboxSaveCompress" type="checkbox" name="save-compress" /><br>
         
         <div id="webpSettings" class="settingBlock">
             <h3>webp</h3>
-            <h4>pre compress setting ( cwebp )</h4>
-            enable compress : <input type="checkbox" id="checkboxWebpCompress" checked/><br>
-            compress preset :  <select id="selectWebpCompressPreset">
+            <h4>事前圧縮設定 ( cwebp )</h4>
+            事前圧縮を行う : <input type="checkbox" id="checkboxWebpCompress" checked/><br>
+            圧縮タイプ :  <select id="selectWebpCompressPreset">
                 <option value="default">default</option>
                 <option value="picture">picture</option>
                 <option value="photo">photo</option>
@@ -32,18 +32,18 @@
                 <option value="text">text</option>
             </select>
 
-            <h4>animation convert setting ( img2webp )</h4>
-            quality(auto min_size) : <input type="checkbox" id="checkboxWebpQualityMinsize" checked/><br>
-            quality(manual) : <input type="number" id="numberWebpQuality" min="0" max="100" value="85" disabled><br>
+            <h4>アニメ画像変換用設定 ( img2webp )</h4>
+            品質(自動) : <input type="checkbox" id="checkboxWebpQualityMinsize" checked/><br>
+            品質(手動) : <input type="number" id="numberWebpQuality" min="0" max="100" value="85" disabled><br>
         </div>
 
         <div id="apngSettings" class="settingBlock">
             <h3>apng</h3>
-            <h4>pre compress setting ( pngquant )</h4>
-            enable compress : <input type="checkbox" id="checkboxPngCompress" name="png-compress" checked/><br>
-            compress quality : <input type="number" id="numberPngQuality" min="0" max="100" value="70"><br>
-            <h4>animation convert setting ( apngasm )</h4>
-            compress type : <select id="selectApngCompressType">
+            <h4>事前圧縮設定 ( pngquant )</h4>
+            事前圧縮を行う : <input type="checkbox" id="checkboxPngCompress" name="png-compress" checked/><br>
+            圧縮品質 : <input type="number" id="numberPngQuality" min="0" max="100" value="70"><br>
+            <h4>アニメ画像変換用設定 ( apngasm )</h4>
+            変換時圧縮タイプ : <select id="selectApngCompressType">
                 <option value="1">zlib</option>
                 <option value="2" selected>7zip</option>
                 <option value="3">Zopfli</option>
@@ -53,18 +53,18 @@
         <button id="buttonExecute" disabled="true">変換実行</button><br>
 
         <div id="convertProgressWrapper">
-            <h3>Progress</h3>
+            <h3>進捗</h3>
             <span id="convertProgressText">0 / 0</span>
             <div class="progressGauge"><p></p></div>
         </div>
 
-        <h3>▼selected</h3>
+        <h3>選択済み変換対象</h3>
         <pre id="selectedText" class="log"></pre>
-        <h3>▼progress</h3>
+        <h3>変換中</h3>
         <pre id="progressText" class="log"></pre>
-        <h3>▼success</h3>
+        <h3>変換成功</h3>
         <pre id="successText" class="log"></pre>
-        <h3>▼error</h3>
+        <h3>エラー</h3>
         <pre id="errorText" class="log"></pre>
         <script src="./js/app.js" defer></script>
     </body>

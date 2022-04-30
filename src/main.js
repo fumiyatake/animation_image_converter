@@ -38,20 +38,20 @@ const createWindow = async () => {
     ipcMain.handle('show-result', async ( _e, _arg ) => {
         const [ outputDir, successCount, errorCount ] = _arg;
         const notice = new Notification( {
-            title   : '[Animate Image Converter] Finished',
-            body    : 'please check details.',
+            title   : '[Animate Image Converter] 変換完了',
+            body    : '結果詳細を確認してください',
         } );
         notice.on( 'click', () => mainWindow.focus() );
         notice.show();
 
         const result = await dialog.showMessageBox( mainWindow, {
-            title           : 'Finished',
-            checkboxLabel   : 'open output folder',
+            title           : '変換完了',
+            checkboxLabel   : '出力先フォルダを開く',
             type            : errorCount > 0 ? 'error' : 'info',
             detail          : [
-                'Process finished!',
-                `  (success : ${successCount}, error ${errorCount}.)`,
-                `${ errorCount > 0 ? 'please check error details at main window.' : ''}`,
+                '変換が完了しました。',
+                `  (成功 : ${successCount}件, 失敗 ${errorCount}件.)`,
+                `${ errorCount > 0 ? 'メイン画面に表示されているエラー文言を確認してください。' : ''}`,
             ].join( '\n' ),
             checkboxChecked : true,
             buttons         : [ 'OK' ],
