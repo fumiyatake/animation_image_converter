@@ -2,6 +2,7 @@
 const { app, BrowserWindow, ipcMain, dialog, shell, Notification } = require( 'electron' );
 const path = require( 'path' );
 const { IS_DEV } = require( './config.js' );
+const settings = require( './settings.js' );
 const { convert } = require('./animate_image_convert.js');
 
 const createWindow = async () => {
@@ -12,7 +13,12 @@ const createWindow = async () => {
             preload: path.join( __dirname, 'preload.js' ),
         }
     });
-    mainWindow.maximize();
+    const { isMaximized, bounds } = settings.get( 'isMaximized', 'bounds' );
+    if( isMaximized || bounds === null ){
+        mainWindow.maximize();
+    }else{
+        mainWindow.setBounds( bounds );
+    }
 
     // open devtool if env is develop
     if( IS_DEV ){
@@ -60,6 +66,13 @@ const createWindow = async () => {
     });
 
     mainWindow.loadFile( path.join( __dirname, 'public', 'index.html' ) );
+
+    mainWindow.on( 'close', () => {
+        settings.set( {
+            isMaximized : mainWindow.isMaximized(),
+            bounds      : mainWindow.getBounds(),
+        });
+    });
 }
 
 app.once( 'ready', () => {
