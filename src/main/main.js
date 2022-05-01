@@ -29,6 +29,7 @@ const createWindow = async () => {
         return dialog
             .showOpenDialog( mainWindow, {
                 properties: ['openDirectory', 'multiSelections'],
+                title : '変換対象フォルダ選択（複数選択可）'
             } )
             .then( result => {
                 if( result.canceled ) return [];
