@@ -50,6 +50,8 @@ const createWindow = async () => {
         notice.on( 'click', () => mainWindow.focus() );
         notice.show();
 
+        const isOpenOutputDir = settings.get( 'isOpenOutputDir' );
+        
         const result = await dialog.showMessageBox( mainWindow, {
             title           : '変換完了',
             checkboxLabel   : '出力先フォルダを開く',
@@ -59,10 +61,11 @@ const createWindow = async () => {
                 `  (成功 : ${successCount}件, 失敗 ${errorCount}件.)`,
                 `${ errorCount > 0 ? 'メイン画面に表示されているエラー文言を確認してください。' : ''}`,
             ].join( '\n' ),
-            checkboxChecked : true,
+            checkboxChecked : ( isOpenOutputDir === null ) ? true : isOpenOutputDir,
             buttons         : [ 'OK' ],
         } );
         if( result.checkboxChecked ) await shell.openPath( outputDir );
+        if( isOpenOutputDir !== result.checkboxChecked ) settings.set( 'isOpenOutputDir', result.checkboxChecked );
     });
 
     mainWindow.loadFile( path.join( SRC_DIR, 'renderer', 'index.html' ) );
