@@ -24,8 +24,7 @@ exports.get = function( ...keys ){
     if( keys.length === 0 ) return null;
 
     if( keys.length === 1 ){
-        const key = keys;
-        return key in settings ? settings[key] : null;
+        return keys[0] in settings ? settings[keys[0]] : null;
     }
 
     const result = {};
