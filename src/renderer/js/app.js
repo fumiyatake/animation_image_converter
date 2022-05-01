@@ -9,6 +9,7 @@
     const checkboxTargetWebp    = document.getElementById( 'checkboxTargetWebp' );
     const checkboxTargetApng    = document.getElementById( 'checkboxTargetApng' );
     const checkboxLoop          = document.getElementById( 'checkboxLoop' );
+    const numberLoopCount       = document.getElementById( 'numberLoopCount' );
     const numberFramerate       = document.getElementById( 'numberFramerate' );
     const checkboxSaveCompress  = document.getElementById( 'checkboxSaveCompress' );
 
@@ -98,6 +99,14 @@
         window.myApi.showResult( options.outputDir, successList.length, errorList.length );
     });
 
+    checkboxLoop.addEventListener( 'change', function(){
+        if( this.checked ){
+            numberLoopCount.setAttribute( 'disabled', 'true' );
+        }else{
+            numberLoopCount.removeAttribute( 'disabled' );
+        }
+    });
+
     checkboxTargetWebp.addEventListener( 'change', function(){
         webpSettingBlock.style.display = this.checked ? 'block' : 'none';
     });
@@ -118,7 +127,7 @@
         const options = {
             'outputDir'         : [ ...dirList[0].split( window.vars.ds ).slice( 0, -1 ), 'output' ].join( window.vars.ds ),
             'framerate'         : numberFramerate.value,
-            'loop'              : checkboxLoop.checked ? '0' : '1', // ループ回数は0=無限
+            'loop'              : checkboxLoop.checked ? '0' : numberLoopCount.value, // ループ回数は0=無限
             'save_compressed'   : checkboxSaveCompress.checked
         }
 
