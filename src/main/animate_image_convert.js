@@ -125,7 +125,7 @@ const compressPng = async( sourceDir, compressedDir, targetFiles, options ) => {
 }
 
 const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => {
-    const binPath   = path.join( BIN_DIR , 'img2webp.exe' );
+    const binPath   = path.join( BIN_DIR , 'img2webp', 'img2webp.exe' );
     const drive = sourceDir.slice(0,2);
     const optionString = [
         `-o "${path.join( options.outputDir, `${outputFileName}.webp` )}"`,
@@ -145,7 +145,7 @@ const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => 
 };
 
 const createApng = async( sourceDir, targetFiles, outputFileName, options ) => {
-    const binPath   = path.join( BIN_DIR , 'apngasm64.exe' );
+    const binPath   = path.join( BIN_DIR , 'apngasm', 'apngasm64.exe' );
     const drive = sourceDir.slice(0,2);
     const optionString = [
         `"${path.join( options.outputDir, `${outputFileName}.png` )}"`,  // output
