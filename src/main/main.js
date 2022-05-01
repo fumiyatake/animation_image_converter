@@ -1,7 +1,7 @@
 'use strict';
 const { app, BrowserWindow, ipcMain, dialog, shell, Notification } = require( 'electron' );
 const path = require( 'path' );
-const { IS_DEV } = require( './config.js' );
+const { IS_DEV, SRC_DIR } = require( './config.js' );
 const settings = require( './settings.js' );
 const { convert } = require('./animate_image_convert.js');
 
@@ -10,7 +10,7 @@ const createWindow = async () => {
         title: 'Animation Image Converter',
         webPreferences: {
             nodeIntegration: false,
-            preload: path.join( __dirname, 'preload.js' ),
+            preload: path.join( SRC_DIR, 'renderer', 'preload.js' ),
         }
     });
     const { isMaximized, bounds } = settings.get( 'isMaximized', 'bounds' );
@@ -65,7 +65,7 @@ const createWindow = async () => {
         if( result.checkboxChecked ) await shell.openPath( outputDir );
     });
 
-    mainWindow.loadFile( path.join( __dirname, 'public', 'index.html' ) );
+    mainWindow.loadFile( path.join( SRC_DIR, 'renderer', 'index.html' ) );
 
     mainWindow.on( 'close', () => {
         settings.set( {

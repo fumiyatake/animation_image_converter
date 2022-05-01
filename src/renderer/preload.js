@@ -1,7 +1,8 @@
 'use strict';
 
+const path = require( 'path' );
 const { ipcRenderer, contextBridge } = require( 'electron' );
-const { IS_DEV } = require( './config.js' );
+const { IS_DEV } = require( path.join( '..', 'main', 'config.js' ) );
 
 contextBridge.exposeInMainWorld( 'myApi', {
     selectDirectory : async () => ipcRenderer.invoke( 'select-directory' ),
