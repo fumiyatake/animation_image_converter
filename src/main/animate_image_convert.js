@@ -81,8 +81,8 @@ const convert = async ( sourceDir, options ) => {
 
 const compressWebp = async( sourceDir, compressedDir, targetFiles, options ) => {
     // imageminはPure ESModule形式で他がCommonJS形式なのでDynamic importによる読み込みを使用
-    const { default: imagemin }         = await import( 'imagemin' );
-    const { default: imageminPngquant } = await import( 'imagemin-webp' );
+    const { default: imagemin }     = await import( 'imagemin' );
+    const { default: imageminWebp } = await import( 'imagemin-webp' );
     
     if( !existsSync( compressedDir ) ){
         mkdirSync( compressedDir, { recursive: true } );
@@ -92,7 +92,7 @@ const compressWebp = async( sourceDir, compressedDir, targetFiles, options ) => 
         destination: compressedDir,
         glob: false,
         plugins:[
-            imageminPngquant({
+            imageminWebp({
                 preset: options.webp.compress_preset,
                 method : 6,
             })
