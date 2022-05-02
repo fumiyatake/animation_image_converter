@@ -138,7 +138,7 @@ const createWebp = async ( sourceDir, targetFiles, outputFileName, options ) => 
     ].join( ' ' );
     // コマンドには文字数制限があるため、超えないようにcdで素材フォルダまで移動したうえで実行
     // ※別ドライブに移動する場合、cdの前にドライブ自体の移動が必要
-    const command = `${drive} && cd "${sourceDir}" && ${binPath} ${optionString}`;
+    const command = `${drive} && cd "${sourceDir}" && "${binPath}" ${optionString}`;
     console.log(command);
     const result = await exec(command);
     return result;
@@ -156,7 +156,7 @@ const createApng = async( sourceDir, targetFiles, outputFileName, options ) => {
     ].join( ' ' );
     // コマンドには文字数制限があるため、超えないようにcdで素材フォルダまで移動したうえで実行
     // ※別ドライブに移動する場合、cdの前にドライブ自体の移動が必要
-    const command = `${drive} && cd "${sourceDir}" && ${binPath} ${optionString}`;
+    const command = `${drive} && cd "${sourceDir}" && "${binPath}" ${optionString}`;
     console.log(command);
     const result = await exec(command);
     return result;
