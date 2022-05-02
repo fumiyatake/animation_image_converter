@@ -1,6 +1,6 @@
 {
   "name": "animate_image_converter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Animate Image Converter",
   "main": "src/main/main.js",
   "scripts": {
