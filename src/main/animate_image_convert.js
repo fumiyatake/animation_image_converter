@@ -149,7 +149,11 @@ const createApng = async( sourceDir, targetFiles, outputFileName, options ) => {
     const drive = sourceDir.slice(0,2);
     const optionString = [
         `"${path.join( options.outputDir, `${outputFileName}.png` )}"`,  // output
-        targetFiles.map( file => `"${file}"` ).join( ' ' ), // source files
+        // source files
+        // NOTE: apngasmではファイル名の先頭が数字だとフレームレートの指定が外れてしまう現象があったので、強制的に'./${ファイル名}'の形に調整
+        //       path.join( '.', file )だと'./'部分が不要と判断されてか無視されてしまったので直接文字列結合する
+        targetFiles.map( file => `".${path.sep + file}"` ).join( ' ' ),
+        
         `1 ${options.framerate}`,
         `-l${options.loop}`,
         `-z${options.apng.apng_compress_type}`,

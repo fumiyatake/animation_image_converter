@@ -12,5 +12,5 @@ contextBridge.exposeInMainWorld( 'myApi', {
 
 contextBridge.exposeInMainWorld( 'vars', {
     isDev   : IS_DEV,
-    ds      : ( process.platform === 'win32' ) ? '\\' : '/',
+    ds      : path.sep,
 } );
